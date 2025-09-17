@@ -1,9 +1,10 @@
 # Murphy - 现代化全栈应用框架
 
-[![CI/CD](https://github.com/murphy/murphy/workflows/CI/CD%20Pipeline/badge.svg)](https://github.com/murphy/murphy/actions)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Node Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
 [![Java Version](https://img.shields.io/badge/java-21-orange.svg)](https://openjdk.java.net/projects/jdk/21/)
+[![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.5-brightgreen.svg)](https://spring.io/projects/spring-boot)
+[![Next.js](https://img.shields.io/badge/Next.js-15-black.svg)](https://nextjs.org/)
 
 基于 Next.js 15 + Spring Boot 3.x 的企业级全栈应用开发框架，同时提供**传统 MVC** 和**响应式 WebFlux** 两种后端架构选择。
 
@@ -58,9 +59,9 @@
 - **负载均衡**: Nginx
 - **包管理**: pnpm (前端) + Gradle (后端)
 
-## 📁 项目结构 (重构后)
+## 📁 项目结构
 
-经过架构优化，Murphy项目现在采用更清晰的模块化架构：
+Murphy项目现在采用更清晰的模块化架构：
 
 ```
 murphy/
@@ -174,8 +175,8 @@ murphy/
 ### 安装依赖
 
 ```bash
-# 克隆项目
-git clone https://github.com/murphy/murphy.git
+# 克隆项目 (请替换为你的实际仓库地址)
+git clone <your-repository-url>
 cd murphy
 
 # 安装 pnpm (如果还没安装)
@@ -440,9 +441,8 @@ git push origin feature/your-feature-name
 如果您遇到任何问题或有建议，请：
 
 1. 查看 [FAQ](docs/faq.md)
-2. 搜索 [Issues](https://github.com/murphy/murphy/issues)
-3. 创建新的 Issue
-4. 联系维护团队
+2. 创建新的 Issue (在你的GitHub仓库中)
+3. 联系维护团队
 
 ## 🎯 路线图
 
