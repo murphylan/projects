@@ -30,16 +30,15 @@
 - **语言**: TypeScript
 - **UI 组件**: Ant Design 5.x
 - **状态管理**: Zustand (轻量化状态管理 + 持久化)
-- **样式**: Tailwind CSS + CSS Modules
+- **样式**: Tailwind CSS
 - **实时通信**: Server-Sent Events (SSE)
-- **API 请求**: Axios + React Query / SWR
+- **API 请求**: React Query
 - **测试**: Jest + React Testing Library + Playwright
 - **代码质量**: ESLint + Prettier
 
 ### 后端技术
 - **框架**: Spring Boot 3.3.x + Spring Security + Spring Data
 - **语言**: Java 21
-- **微服务**: Spring Cloud 2023.x
 - **数据库**: 
   - 关系型：PostgreSQL
   - 非关系型：MongoDB
@@ -59,46 +58,109 @@
 - **负载均衡**: Nginx
 - **包管理**: pnpm (前端) + Gradle (后端)
 
-## 📁 项目结构
+## 📁 项目结构 (重构后)
+
+经过架构优化，Murphy项目现在采用更清晰的模块化架构：
 
 ```
 murphy/
-├── frontend/                 # Next.js 前端应用
-│   ├── src/
-│   │   ├── app/             # App Router 页面
-│   │   ├── components/      # 可复用组件
-│   │   ├── store/          # Zustand 状态管理
-│   │   ├── lib/            # 工具库
-│   │   └── types/          # TypeScript 类型定义
-│   ├── e2e/                # Playwright E2E 测试
-│   ├── public/             # 静态资源
-│   └── package.json
-├── backend-mvc/             # Spring MVC 传统后端
-│   ├── src/main/java/com/yzt/mvc/
-│   │   ├── config/         # 配置类
-│   │   ├── controller/     # REST 控制器
-│   │   ├── service/        # 业务逻辑层
-│   │   ├── repository/     # JPA 数据访问层
-│   │   ├── entity/         # JPA 实体类
-│   │   └── dto/            # 数据传输对象
-│   └── build.gradle
-├── backend-webflux/         # Spring WebFlux 响应式后端
-│   ├── src/main/java/com/yzt/webflux/
-│   │   ├── config/         # 配置类
-│   │   ├── controller/     # 响应式控制器
-│   │   ├── service/        # 响应式业务逻辑层
-│   │   ├── repository/     # R2DBC 数据访问层
-│   │   ├── entity/         # R2DBC 实体类
-│   │   └── dto/            # 数据传输对象
-│   └── build.gradle
-├── doc/                    # Docusaurus 文档站点
-├── salesplan/              # 销售计划模块 (示例)
+├── apps/                    # 应用层
+│   └── frontend/           # Next.js 15 前端应用
+│       ├── src/
+│       │   ├── app/        # App Router 页面
+│       │   ├── components/ # 可复用组件
+│       │   ├── store/      # Zustand 状态管理
+│       │   ├── lib/        # 工具库
+│       │   └── types/      # TypeScript 类型定义
+│       ├── e2e/            # Playwright E2E 测试
+│       └── package.json
+├── packages/               # 可复用包
+│   ├── common/             # 通用工具和类型定义
+│   │   ├── src/
+│   │   │   ├── types/      # 共享TypeScript类型
+│   │   │   ├── utils/      # 通用工具函数
+│   │   │   └── constants/  # 业务常量
+│   │   └── package.json
+│   ├── auth-service/       # 认证服务 (Spring Boot)
+│   │   ├── src/main/java/com/murphy/auth/
+│   │   │   ├── config/     # Spring Security配置
+│   │   │   ├── controller/ # 认证API
+│   │   │   ├── service/    # 认证业务逻辑
+│   │   │   └── entity/     # 用户实体
+│   │   └── build.gradle
+│   └── database/           # 数据库抽象层
+│       ├── src/main/java/com/murphy/database/
+│       │   ├── entity/     # JPA实体定义
+│       │   ├── repository/ # Repository接口
+│       │   └── config/     # 数据库配置
+│       └── build.gradle
+├── services/               # 业务服务
+│   ├── backend-mvc/        # Spring MVC 服务
+│   │   ├── src/main/java/com/murphy/mvc/
+│   │   │   ├── config/     # 配置类
+│   │   │   ├── controller/ # REST 控制器
+│   │   │   ├── service/    # 业务逻辑层
+│   │   │   └── dto/        # 数据传输对象
+│   │   └── build.gradle
+│   └── backend-webflux/    # Spring WebFlux 服务
+│       ├── src/main/java/com/murphy/webflux/
+│       │   ├── config/     # 配置类
+│       │   ├── controller/ # 响应式控制器
+│       │   ├── service/    # 响应式业务逻辑层
+│       │   └── dto/        # 数据传输对象
+│       └── build.gradle
+├── docs/                   # Docusaurus 文档站点
 ├── .github/                # GitHub Actions 工作流
 ├── monitoring/             # 监控配置 (Prometheus, Grafana)
 ├── docker-compose.yml      # 完整开发环境
 ├── package.json           # Workspace 根配置
 └── pnpm-workspace.yaml    # pnpm 工作空间配置
 ```
+
+### 🏗️ 架构设计优势
+
+#### 🎯 **清晰的层次结构**
+- **apps/** - 应用层：面向用户的应用程序
+- **packages/** - 可复用包：跨项目共享的模块
+- **services/** - 业务服务：独立的Spring Boot服务
+
+#### 📦 **模块化设计**
+
+**1. packages/common** - 通用工具包
+- 🔧 **作用**: 前后端共享的类型定义、工具函数、常量
+- 📋 **包含**: 
+  - API接口类型、用户类型、分页类型
+  - 日期处理、字符串处理、验证函数
+  - API端点、HTTP状态码、默认配置
+- 🎯 **优势**: 保证前后端类型一致性，减少重复代码
+
+**2. packages/auth-service** - 认证服务
+- 🔐 **作用**: 独立的认证和授权服务
+- 🛠️ **技术栈**: Spring Boot 3.5.5 + Spring Security + JWT
+- 🚀 **功能**: 用户登录/注册、JWT令牌管理、权限验证
+- 🌐 **端口**: 8082 (独立运行)
+
+**3. packages/database** - 数据库层
+- 🗄️ **作用**: 数据访问层的抽象和共享
+- 🛠️ **技术栈**: Spring Data JPA + Flyway + PostgreSQL
+- 📊 **功能**: JPA实体定义、Repository接口、数据库迁移
+- 🔄 **使用方式**: 被其他Spring Boot服务引用
+
+**4. services/backend-mvc** - MVC业务服务
+- 🌐 **作用**: 传统的RESTful API服务
+- ⚡ **特点**: 同步请求处理，适合CRUD操作
+- 🚀 **端口**: 8080
+
+**5. services/backend-webflux** - 响应式服务
+- 🔄 **作用**: 高并发的响应式服务
+- ⚡ **特点**: 异步非阻塞处理，适合高并发场景
+- 🚀 **端口**: 8081
+
+**6. apps/frontend** - 前端应用
+- 💻 **技术栈**: Next.js 15 + React + TypeScript
+- 🎨 **UI**: Tailwind CSS + Ant Design
+- 🔗 **集成**: 使用common包中的类型定义
+- 🚀 **端口**: 3000
 
 ## 🏗️ 快速开始
 
@@ -142,27 +204,42 @@ docker-compose logs -f
 
 1. **启动 MVC 后端服务** (传统阻塞式)
 ```bash
-cd backend-mvc
+cd services/backend-mvc
 ./gradlew bootRunDev
 # 访问: http://localhost:8080/api/v1/mvc
 ```
 
 2. **启动 WebFlux 后端服务** (响应式)
 ```bash
-cd backend-webflux
+cd services/backend-webflux
 ./gradlew bootRunDev
 # 访问: http://localhost:8081/api/v1/webflux
 ```
 
-3. **同时启动两个后端**
+3. **启动认证服务**
 ```bash
-pnpm backend:both
+cd packages/auth-service
+./gradlew bootRunDev
+# 访问: http://localhost:8082/api/auth
 ```
 
-4. **启动前端服务**
+4. **同时启动所有后端服务**
 ```bash
-cd frontend
+pnpm backend:all
+```
+
+5. **启动前端服务**
+```bash
+cd apps/frontend
 pnpm dev
+# 访问: http://localhost:3000
+```
+
+6. **启动文档站点**
+```bash
+cd docs
+pnpm dev
+# 访问: http://localhost:3000 (文档)
 ```
 
 ### 访问应用
@@ -170,31 +247,66 @@ pnpm dev
 - **前端应用**: http://localhost:3000
 - **MVC 后端 API**: http://localhost:8080/api/v1/mvc
 - **WebFlux 后端 API**: http://localhost:8081/api/v1/webflux
+- **认证服务 API**: http://localhost:8082/api/auth
 - **MVC API 文档**: http://localhost:8080/api/swagger-ui.html
 - **WebFlux API 文档**: http://localhost:8081/api/swagger-ui.html
+- **认证服务 API 文档**: http://localhost:8082/api/swagger-ui.html
 - **H2 数据库控制台**: http://localhost:8080/api/h2-console (开发环境)
-- **Grafana 监控**: http://localhost:3001 (admin/admin)
+- **文档站点**: http://localhost:3001 (docs)
+- **Grafana 监控**: http://localhost:3002 (admin/admin)
 - **Prometheus**: http://localhost:9090
 - **Kibana**: http://localhost:5601
 
+## 🔄 项目重构说明
+
+### 📈 **重构优势**
+
+相比原有的平铺式结构，新的模块化架构具有以下优势：
+
+1. **🏗️ 清晰的层次结构** - apps、packages、services分层明确
+2. **🎯 明确的职责边界** - 每个模块都有清晰的功能定义
+3. **♻️ 更好的复用性** - packages可以被多个服务复用
+4. **🔧 模块化架构** - 服务间松耦合，易于独立部署
+5. **💻 更好的开发体验** - 支持独立开发和测试
+6. **📦 统一的包管理** - 使用PNPM workspace统一管理依赖
+
+### 🔄 **迁移指南**
+
+从旧结构迁移到新结构的步骤：
+
+1. **更新导入路径**: 前端代码中使用 `@murphy/common` 包的类型
+2. **重新配置IDE**: 更新IDE的项目结构配置
+3. **更新CI/CD**: 修改构建脚本以适应新的目录结构
+4. **数据库迁移**: 使用 `packages/database` 中的迁移脚本
+
+### 🎯 **下一步规划**
+
+- [ ] 添加API网关 (Nginx/Spring Cloud Gateway)
+- [ ] 完善服务间通信机制
+- [ ] 添加分布式链路追踪
+- [ ] 优化CI/CD流水线
+
 ### 🔍 API 端点对比
 
-| 功能 | MVC 端点 | WebFlux 端点 |
-|------|----------|-------------|
-| 基础信息 | GET /api/v1/mvc/hello | GET /api/v1/webflux/hello |
-| 用户列表 | GET /api/v1/mvc/users | GET /api/v1/webflux/users |
-| 创建用户 | POST /api/v1/mvc/users | POST /api/v1/webflux/users |
-| 异步数据 | GET /api/v1/mvc/async-data | GET /api/v1/webflux/async-data |
-| 服务器信息 | GET /api/v1/mvc/info | GET /api/v1/webflux/info |
-| 事件流 | - | GET /api/v1/webflux/events |
-| 批量数据 | - | GET /api/v1/webflux/batch-data |
+| 功能 | MVC 端点 | WebFlux 端点 | 认证服务端点 |
+|------|----------|-------------|-------------|
+| 基础信息 | GET /api/v1/mvc/hello | GET /api/v1/webflux/hello | GET /api/auth/info |
+| 用户登录 | POST /api/v1/mvc/auth/login | POST /api/v1/webflux/auth/login | POST /api/auth/login |
+| 用户注册 | POST /api/v1/mvc/auth/register | POST /api/v1/webflux/auth/register | POST /api/auth/register |
+| 用户列表 | GET /api/v1/mvc/users | GET /api/v1/webflux/users | GET /api/auth/users |
+| 创建用户 | POST /api/v1/mvc/users | POST /api/v1/webflux/users | POST /api/auth/users |
+| 异步数据 | GET /api/v1/mvc/async-data | GET /api/v1/webflux/async-data | - |
+| 服务器信息 | GET /api/v1/mvc/info | GET /api/v1/webflux/info | GET /api/auth/health |
+| 事件流 | - | GET /api/v1/webflux/events | - |
+| 批量数据 | - | GET /api/v1/webflux/batch-data | - |
+| 令牌刷新 | - | - | POST /api/auth/refresh |
 
 ## 🧪 测试
 
 ### 前端测试
 
 ```bash
-cd frontend
+cd apps/frontend
 
 # 单元测试
 pnpm test
@@ -212,9 +324,20 @@ pnpm test:e2e:ui
 ### 后端测试
 
 ```bash
-cd backend
+# MVC 服务测试
+cd services/backend-mvc
+./gradlew test
 
-# 运行所有测试
+# WebFlux 服务测试
+cd services/backend-webflux
+./gradlew test
+
+# 认证服务测试
+cd packages/auth-service
+./gradlew test
+
+# 数据库包测试
+cd packages/database
 ./gradlew test
 
 # 运行测试并生成覆盖率报告
@@ -222,6 +345,18 @@ cd backend
 
 # 运行 Checkstyle 检查
 ./gradlew checkstyleMain checkstyleTest
+```
+
+### 通用工具包测试
+
+```bash
+cd packages/common
+
+# TypeScript 单元测试
+pnpm test
+
+# 类型检查
+pnpm type-check
 ```
 
 ## 🚢 部署
@@ -315,11 +450,17 @@ git push origin feature/your-feature-name
 - [x] 前后端集成
 - [x] Docker 容器化
 - [x] CI/CD 流水线
+- [x] **项目架构重构** (模块化设计)
+- [x] **认证服务拆分** (独立服务)
+- [x] **通用包抽离** (复用性优化)
+- [ ] API网关集成 (Nginx/Spring Cloud Gateway)
 - [ ] Kubernetes 部署配置
-- [ ] 微服务拆分
+- [ ] 容器编排优化
+- [ ] 分布式链路追踪
 - [ ] 性能优化
 - [ ] 安全加固
 - [ ] 多租户支持
+- [ ] 事件驱动架构
 
 ---
 

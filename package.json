@@ -4,21 +4,25 @@
   "description": "Murphy - 现代化全栈应用框架",
   "private": true,
   "workspaces": [
-    "frontend",
-    "doc"
+    "apps/*",
+    "packages/*", 
+    "docs"
   ],
   "scripts": {
     "build": "pnpm -r build",
     "dev": "pnpm -r dev",
-    "lint": "pnpm -r lint",
+    "lint": "pnpm -r lint", 
     "test": "pnpm -r test",
     "clean": "pnpm -r clean",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
-    "backend:mvc": "cd backend-mvc && ./gradlew bootRunDev",
-    "backend:webflux": "cd backend-webflux && ./gradlew bootRunDev",
-    "backend:both": "concurrently \"pnpm backend:mvc\" \"pnpm backend:webflux\""
+    "backend:mvc": "cd services/backend-mvc && ./gradlew bootRunDev",
+    "backend:webflux": "cd services/backend-webflux && ./gradlew bootRunDev",
+    "backend:auth": "cd services/auth-service && ./gradlew bootRunDev",
+    "backend:all": "concurrently \"pnpm backend:mvc\" \"pnpm backend:webflux\" \"pnpm backend:auth\"",
+    "frontend:dev": "pnpm --filter @murphy/frontend dev",
+    "docs:dev": "pnpm --filter @murphy/docs dev"
   },
   "engines": {
     "node": ">=18.0.0",

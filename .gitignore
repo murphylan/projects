@@ -141,3 +141,7 @@ vite.config.ts.timestamp-*
 backend-mvc/.gradle
 backend-mvc/.gradle/**
 backend-webflux/.gradle/**
+backend-webflux/.gradle
+.gradle
+build/
+build/**
