@@ -138,3 +138,6 @@ dist
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 .DS_Store
+backend-mvc/.gradle
+backend-mvc/.gradle/**
+backend-webflux/.gradle/**
