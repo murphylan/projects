@@ -32,7 +32,7 @@
 | **OAuth2 授权服务器** | **Spring Boot + `spring-boot-starter-oauth2-authorization-server`** | 颁发 JWT 令牌，管理客户端和用户认证 |
 | **资源服务器 (你的API)** | **Spring Boot + `spring-boot-starter-oauth2-resource-server`** | 验证 JWT 令牌，提供受保护的 API 资源 |
 | **Next.js 前端客户端** | **Auth.js (next-auth)** | 处理前端登录流程，管理用户会话，获取并存储访问令牌 |
-| **Next.js -> Spring Boot** | **标准的 `fetch` 或 `axios`** | 在 HTTP 请求头 `Authorization: Bearer <token>` 中携带令牌访问 API |
+| **Next.js -> Spring Boot** | **Tanstack Query** | 在 HTTP 请求头 `Authorization: Bearer <token>` 中携带令牌访问 API |
 
 #### 工程目录与用途说明
 
@@ -42,18 +42,19 @@
 - Next.js 前端通过标准 HTTP 请求（如 `fetch` 或 `axios`）携带令牌访问 Spring Boot 资源服务器，实现前后端分离的安全认证与授权。
 
 ### 前端技术
- **框架**: Next.js 15 + React 18
- **语言**: TypeScript
- **UI 组件**: Ant Design 5.x, Dice UI, Tanstack Data Tables
- **状态管理**: Zustand (轻量化状态管理 + 持久化)
- **样式**: Tailwind CSS
- **实时通信**: Server-Sent Events (SSE)
- **API 请求**: React Query (Tanstack Query)
- **测试**: Jest + React Testing Library + Playwright
- **代码质量**: ESLint + Prettier
+
+**框架**: Next.js 15 + React 18
+**语言**: TypeScript
+**UI 组件**: Ant Design 5.x, Dice UI, Tanstack Data Tables
+**状态管理**: Zustand (轻量化状态管理 + 持久化)
+**样式**: Tailwind CSS
+**实时通信**: Server-Sent Events (SSE)
+**API 请求**: React Query (Tanstack Query)
+**测试**: Jest + React Testing Library + Playwright
+**代码质量**: ESLint + Prettier
 
 ### 后端技术
-| **Next.js -> Spring Boot** | **Tanstack Query** | 在 HTTP 请求头 `Authorization: Bearer <token>` 中携带令牌访问 API |
+
 - **框架**: Spring Boot 3.3.x + Spring Security + Spring Data
 - **语言**: Java 21
 - **数据库**: 
@@ -78,7 +79,6 @@
 ## 📁 项目结构
 
 Murphy项目现在采用更清晰的模块化架构：
-...existing code...
 
 ```
 murphy/

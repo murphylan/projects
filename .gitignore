@@ -145,3 +145,4 @@ backend-webflux/.gradle
 .gradle
 build/
 build/**
+**/**.class
