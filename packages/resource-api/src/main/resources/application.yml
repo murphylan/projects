@@ -1,0 +1,13 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: resource-api
+
+# JWT 配置，issuer 必须与授权服务器一致
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:9000

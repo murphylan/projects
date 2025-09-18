@@ -25,19 +25,35 @@
 | **性能特点** | 高吞吐量，资源占用较高 | 高并发，资源占用较低 |
 
 ## 🚀 技术栈
+## OAuth2 认证与前后端分离架构
+
+| 组件 | 技术选择 | 作用 |
+| :--- | :--- | :--- |
+| **OAuth2 授权服务器** | **Spring Boot + `spring-boot-starter-oauth2-authorization-server`** | 颁发 JWT 令牌，管理客户端和用户认证 |
+| **资源服务器 (你的API)** | **Spring Boot + `spring-boot-starter-oauth2-resource-server`** | 验证 JWT 令牌，提供受保护的 API 资源 |
+| **Next.js 前端客户端** | **Auth.js (next-auth)** | 处理前端登录流程，管理用户会话，获取并存储访问令牌 |
+| **Next.js -> Spring Boot** | **标准的 `fetch` 或 `axios`** | 在 HTTP 请求头 `Authorization: Bearer <token>` 中携带令牌访问 API |
+
+#### 工程目录与用途说明
+
+- `packages/oauth2-auth-server`：OAuth2 授权服务器，负责统一认证、颁发 JWT 令牌、管理客户端和用户。
+- `packages/resource-api`：资源服务器，负责验证 JWT 令牌，保护和提供受控 API 资源。
+- `apps/frontend`：Next.js 前端客户端，负责用户登录、会话管理、令牌获取与存储，作为 OAuth2 客户端与后端交互。
+- Next.js 前端通过标准 HTTP 请求（如 `fetch` 或 `axios`）携带令牌访问 Spring Boot 资源服务器，实现前后端分离的安全认证与授权。
 
 ### 前端技术
-- **框架**: Next.js 15 + React 18
-- **语言**: TypeScript
-- **UI 组件**: Ant Design 5.x
-- **状态管理**: Zustand (轻量化状态管理 + 持久化)
-- **样式**: Tailwind CSS
-- **实时通信**: Server-Sent Events (SSE)
-- **API 请求**: React Query
-- **测试**: Jest + React Testing Library + Playwright
-- **代码质量**: ESLint + Prettier
+ **框架**: Next.js 15 + React 18
+ **语言**: TypeScript
+ **UI 组件**: Ant Design 5.x, Dice UI, Tanstack Data Tables
+ **状态管理**: Zustand (轻量化状态管理 + 持久化)
+ **样式**: Tailwind CSS
+ **实时通信**: Server-Sent Events (SSE)
+ **API 请求**: React Query (Tanstack Query)
+ **测试**: Jest + React Testing Library + Playwright
+ **代码质量**: ESLint + Prettier
 
 ### 后端技术
+| **Next.js -> Spring Boot** | **Tanstack Query** | 在 HTTP 请求头 `Authorization: Bearer <token>` 中携带令牌访问 API |
 - **框架**: Spring Boot 3.3.x + Spring Security + Spring Data
 - **语言**: Java 21
 - **数据库**: 
@@ -62,6 +78,7 @@
 ## 📁 项目结构
 
 Murphy项目现在采用更清晰的模块化架构：
+...existing code...
 
 ```
 murphy/
@@ -74,20 +91,10 @@ murphy/
 │       │   ├── lib/        # 工具库
 │       │   └── types/      # TypeScript 类型定义
 │       ├── e2e/            # Playwright E2E 测试
-│       └── package.json
-├── packages/               # 可复用包
-│   ├── common/             # 通用工具和类型定义
 │   │   ├── src/
 │   │   │   ├── types/      # 共享TypeScript类型
-│   │   │   ├── utils/      # 通用工具函数
-│   │   │   └── constants/  # 业务常量
-│   │   └── package.json
-│   ├── auth-service/       # 认证服务 (Spring Boot)
 │   │   ├── src/main/java/com/murphy/auth/
 │   │   │   ├── config/     # Spring Security配置
-│   │   │   ├── controller/ # 认证API
-│   │   │   ├── service/    # 认证业务逻辑
-│   │   │   └── entity/     # 用户实体
 │   │   └── build.gradle
 │   └── database/           # 数据库抽象层
 │       ├── src/main/java/com/murphy/database/
@@ -110,7 +117,6 @@ murphy/
 │       │   ├── service/    # 响应式业务逻辑层
 │       │   └── dto/        # 数据传输对象
 │       └── build.gradle
-├── docs/                   # Docusaurus 文档站点
 ├── .github/                # GitHub Actions 工作流
 ├── monitoring/             # 监控配置 (Prometheus, Grafana)
 ├── docker-compose.yml      # 完整开发环境
